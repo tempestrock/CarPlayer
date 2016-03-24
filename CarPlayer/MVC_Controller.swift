@@ -40,7 +40,7 @@ class MVC_Controller {
     // The number of tracks currently stored in the playback list or nil if this value is unavailable
     private var _currentNumberOfTracks: Int?
 
-    // The album id dictionary contains per artist name a ist of the corresponding unique album IDs for this artist:
+    // The album id dictionary contains per artist name a list of the corresponding unique album IDs for this artist:
     private var _albumIDDict: [ String : [ NSNumber ]]
 
     // The album's name if the album's ID is given:
@@ -237,11 +237,16 @@ class MVC_Controller {
 
 
     //
-    // Fills the album dictionary according to what can be found in the music library.
+    // Fills the album dictionary ("_albumIDDict") according to what can be found in the music library.
+    // This is done in the following way:
+    // For each song in the music library the artist name and the album ID are found out.
+    // If the album ID is new for this artist, it is added to the list _albumIDDict[artistname].
+    // Genres are handles just as artist names. So if the genre of the given song is new, the list _albumIDDict[genrename]
+    // is created, and
     //
     func fillAlbumDictionary() {
 
-        // DEBUG println("MVC_Controller.fillAlbumDictionary(): Starting")
+        // DEBUG print("MVC_Controller.fillAlbumDictionary(): Starting")
 
         // Create initial query:
         let songsQuery = MPMediaQuery.songsQuery()
@@ -292,7 +297,7 @@ class MVC_Controller {
             // Get the album ID for the currently checked track:
             let albumID: NSNumber = song.valueForProperty(MPMediaItemPropertyAlbumPersistentID) as! NSNumber
 
-            // Check if the album was unkown for the current artist:
+            // Check if the album is unkown so far for the current artist:
             if ((_albumIDDict[artistName]!).indexOf(albumID) == nil) {
 
                 // Store the album name for this album ID if this has not been done before:
@@ -322,7 +327,7 @@ class MVC_Controller {
                 // Fill the album dictionary with a new album name if this has not been stored before:
                 if _albumIDDict[genreTitle] == nil {
 
-                    // DEBUG println("Genre part: \"\(genreNameOfThisTrack)\", \"\(genreTitle)\"")
+                    //print("Genre: \"\(genreTitle)\" has an empty list")
                     // This genre is new to the list, the list is still nil
                     // => Create a new album ID list:
 
@@ -336,7 +341,13 @@ class MVC_Controller {
                 if ((_albumIDDict[genreTitle]!).indexOf(albumID) == nil) {
 
                     // This album ID was unknown so far. => Add it to the list of album IDs:
+                    //print("Adding albumID \"\(albumID)\" with title: \"\(song.albumTitle!)\" to the ID list of \"\(genreTitle)\".")
                     addAlbumIDAtRightPlace(&_albumIDDict[genreTitle]!, albumTitle: song.albumTitle!, albumIDToBeAdded: albumID)
+
+                    if (genreTitle == "Genre:Indie-Pop") {
+                      // DEBUG print("albumIDDict is \"\(_albumIDDict[genreTitle]![0])\".")
+                    }
+
                 }
 
                 // --- Increase number of tracks for this genre ---
@@ -371,7 +382,9 @@ class MVC_Controller {
         // Finalize the load state:
         _initialLoadState = 1.0
 
-        // DEBUG println("MVC_Controller.fillAlbumDictionary(): Finished")
+        // DEBUG printCompleteAlbumDictionary()
+
+        // DEBUG print("MVC_Controller.fillAlbumDictionary(): Finished")
     }
 
 
@@ -405,7 +418,7 @@ class MVC_Controller {
         let trackTitlesAreEmpty = ((artistName == nil) || (track.albumTitle == nil) || (track.albumTitle == ""))
         if trackTitlesAreEmpty {
             // We skip this track
-            print("Track titles are empty => skipping")
+            // DEBUG print("Track titles are empty => skipping")
             return false
         }
 
@@ -419,23 +432,31 @@ class MVC_Controller {
     //
     func addAlbumIDAtRightPlace(inout idArray: Array<NSNumber>, albumTitle: String, albumIDToBeAdded: NSNumber) {
 
+        // DEBUG print("addAlbumIDAtRightPlace(\(albumTitle), \(albumIDToBeAdded))")
         var foundPosition = false
 
-        for var index = 0; (index < idArray.count) && !foundPosition; index += 1 {
+        if (idArray.count > 0) {
+            for index in 0...idArray.count-1 {
 
-            let albumTitleAtIndexPosition = _albumNameForID[idArray[index]]!
-            if albumTitle < albumTitleAtIndexPosition {
+                let albumTitleAtIndexPosition = _albumNameForID[idArray[index]]!
+                if albumTitle < albumTitleAtIndexPosition {
 
-                // We have found the right position
-                idArray.insert(albumIDToBeAdded, atIndex: index)
+                    // DEBUG print("Adding at position \(index).")
+                    // We have found the right position
+                    idArray.insert(albumIDToBeAdded, atIndex: index)
 
-                // Stop searching the array:
-                foundPosition = true
+                    // Stop searching the array:
+                    foundPosition = true
+                    break
+                }
             }
+        } else {
+            // DEBUG print("array is empty.")
         }
 
         if !foundPosition {
 
+            // DEBUG print("Adding at the end of the list.")
             // We add the albumID at the end of the array:
             idArray.append(albumIDToBeAdded)
             return
@@ -1211,6 +1232,9 @@ class MVC_Controller {
     //
     func numberOfAlbumsForArtist(artistName: String) -> Int {
 
+        if (artistName == "Genre:Indie-Pop") {
+            print("Jetzt knallts.")
+        }
         assert(_albumIDDict[artistName] != nil, "MVC_Controller.numberOfAlbumsForArtist(): album ID list for artist \"\(artistName)\" is uninitialized")
         return _albumIDDict[artistName]!.count
 
@@ -1421,6 +1445,36 @@ class MVC_Controller {
 */
     }
 
+    //
+    // Prints the complete content of the album dictionary in a readable form as a debug output.
+    //
+    func printCompleteAlbumDictionary() {
+
+        print ("Here comes the complete dictionary:")
+        
+        for artistName in _albumIDDict.keys {
+
+            print("  artist: \"\(artistName)\"")
+
+            if _albumIDDict[artistName] == nil {
+
+                // This should not happen!
+                print("    <empty album list> <-- STRANGE!")
+                continue
+            }
+
+            for albumID in _albumIDDict[artistName]! {
+
+                if let albumName = _albumNameForID[albumID] {
+                    print("    album: \"\(albumName)\"")
+                } else {
+                    print("    album: <empty> <-- STRANGE!")
+                }
+            }
+        }
+
+        print ("End of the complete dictionary.")
+    }
 
     /*
     func printlnPlayListOfMusicPlayer() {
