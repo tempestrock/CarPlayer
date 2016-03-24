@@ -147,7 +147,7 @@ class MainViewController: BasicViewController, UIScrollViewDelegate  {
     //
     func createScrollview() {
 
-        // DEBUG println("MainViewController.createScrollview(): Starting")
+        // DEBUG print("MainViewController.createScrollview(): Starting")
 
         let widthOfEntry = MyBasics.ArtWork_Width
         let heightOfEntry = MyBasics.ArtWork_Height
@@ -160,6 +160,7 @@ class MainViewController: BasicViewController, UIScrollViewDelegate  {
 
         for artistShortName in _controller.sortedArtistShortNames() {
 
+            // DEBUG print("artistShortName: \"\(artistShortName)\".")
             // Get the long version of the short artist name:
             let artistLongName = _controller.longArtistName(artistShortName)
 
@@ -182,14 +183,17 @@ class MainViewController: BasicViewController, UIScrollViewDelegate  {
             let button = UIButtonWithFeatures(type: UIButtonType.System)
             button.frame = CGRect(x: xPos, y: yPos, width: widthOfEntry, height: heightOfEntry)
 
-            if let albumArtwork = _controller.artwork(artistLongName) {
+            let albumArtwork: MPMediaItemArtwork?? = _controller.artwork(artistLongName)
+
+            if (albumArtwork != nil) && (albumArtwork! != nil) {
 
                 // An image for the artist does exist.
 
-                let sizeOfArtistImage = CGSize(width: albumArtwork!.imageCropRect.width, height: albumArtwork!.imageCropRect.height)
+                let sizeOfArtistImage = CGSize(width: albumArtwork!!.imageCropRect.width,
+                                               height: albumArtwork!!.imageCropRect.height)
      //           var uiImage = albumArtwork!.imageWithSize(sizeOfArtistImage)
-                button.setBackgroundImage(albumArtwork!.imageWithSize(sizeOfArtistImage), forState: .Normal)
-                button.setBackgroundImage(albumArtwork!.imageWithSize(sizeOfArtistImage), forState: .Highlighted)
+                button.setBackgroundImage(albumArtwork!!.imageWithSize(sizeOfArtistImage), forState: .Normal)
+                button.setBackgroundImage(albumArtwork!!.imageWithSize(sizeOfArtistImage), forState: .Highlighted)
 
             } else {
 

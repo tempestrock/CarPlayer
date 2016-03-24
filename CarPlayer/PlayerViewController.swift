@@ -602,7 +602,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
         // Initialize the array of buttons:
         _sliderButton = [UIButtonWithFeatures]()
 
-        for (var index = 0; index < numberOfButtons; index += 1) {
+        for index in 0 ..< numberOfButtons {
 
             // Create a new button:
             let button = UIButtonWithFeatures(type: UIButtonType.Custom)
