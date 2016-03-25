@@ -435,23 +435,19 @@ class MVC_Controller {
         // DEBUG print("addAlbumIDAtRightPlace(\(albumTitle), \(albumIDToBeAdded))")
         var foundPosition = false
 
-        if (idArray.count > 0) {
-            for index in 0...idArray.count-1 {
+        for index in 0 ..< idArray.count {
 
-                let albumTitleAtIndexPosition = _albumNameForID[idArray[index]]!
-                if albumTitle < albumTitleAtIndexPosition {
+            let albumTitleAtIndexPosition = _albumNameForID[idArray[index]]!
+            if albumTitle < albumTitleAtIndexPosition {
 
-                    // DEBUG print("Adding at position \(index).")
-                    // We have found the right position
-                    idArray.insert(albumIDToBeAdded, atIndex: index)
+                // DEBUG print("Adding at position \(index).")
+                // We have found the right position
+                idArray.insert(albumIDToBeAdded, atIndex: index)
 
-                    // Stop searching the array:
-                    foundPosition = true
-                    break
-                }
+                // Stop searching the array:
+                foundPosition = true
+                break
             }
-        } else {
-            // DEBUG print("array is empty.")
         }
 
         if !foundPosition {
