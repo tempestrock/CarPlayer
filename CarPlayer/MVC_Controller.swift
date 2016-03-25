@@ -382,7 +382,7 @@ class MVC_Controller {
         // Finalize the load state:
         _initialLoadState = 1.0
 
-        // DEBUG printCompleteAlbumDictionary()
+        // DEBUG printAlbumDictionary(logLevel: 1)
 
         // DEBUG print("MVC_Controller.fillAlbumDictionary(): Finished")
     }
@@ -950,8 +950,17 @@ class MVC_Controller {
     //
     func indexOfNowPlayingItem() -> Int {
 
-        return _musicPlayer.indexOfNowPlayingItem + 1
+        // DEBUG print("MVC_Controller.indexOfNowPlayingItem(): index is \(_musicPlayer.indexOfNowPlayingItem).")
+        if _musicPlayer.indexOfNowPlayingItem == NSNotFound {
 
+            // Alarm! The index we get from Apple's music player is somehow completely out of bounds.
+            // This is a bug on the Apple side.
+            // In this case we can only set the index back to some default:
+            print("  --> Apple's music player has lost track of the songs' indexes! Setting index to 0.")
+            return 0
+        } else {
+            return _musicPlayer.indexOfNowPlayingItem + 1
+        }
     }
 
 
@@ -1444,34 +1453,39 @@ class MVC_Controller {
     }
 
     //
-    // Prints the complete content of the album dictionary in a readable form as a debug output.
+    // Prints the content of the album dictionary in a readable form as a debug output.
+    // The "logLevel" parameter defines how much output is printed:
+    //   0: only artist names
+    //   1: also albums of the given artists
     //
-    func printCompleteAlbumDictionary() {
+    func printAlbumDictionary(logLevel logLevel: Int) {
 
-        print ("Here comes the complete dictionary:")
+        print ("Here comes the dictionary:")
         
         for artistName in _albumIDDict.keys {
 
             print("  artist: \"\(artistName)\"")
 
-            if _albumIDDict[artistName] == nil {
+            if logLevel > 0 {
+                if _albumIDDict[artistName] == nil {
 
-                // This should not happen!
-                print("    <empty album list> <-- STRANGE!")
-                continue
-            }
+                    // This should not happen!
+                    print("    <empty album list> <-- STRANGE!")
+                    continue
+                }
 
-            for albumID in _albumIDDict[artistName]! {
+                for albumID in _albumIDDict[artistName]! {
 
-                if let albumName = _albumNameForID[albumID] {
-                    print("    album: \"\(albumName)\"")
-                } else {
-                    print("    album: <empty> <-- STRANGE!")
+                    if let albumName = _albumNameForID[albumID] {
+                        print("    album: \"\(albumName)\"")
+                    } else {
+                        print("    album: <empty> <-- STRANGE!")
+                    }
                 }
             }
         }
 
-        print ("End of the complete dictionary.")
+        print ("End of the dictionary.")
     }
 
     /*

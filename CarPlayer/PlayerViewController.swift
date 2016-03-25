@@ -25,7 +25,9 @@ print("Bug not tapped!")
 
 */
 
-
+//
+// The PlayerViewController is the view that shows the "standard" playing of a song (the one without the map).
+//
 class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
 
     // ----- Attributes -----
