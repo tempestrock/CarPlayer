@@ -10,6 +10,10 @@ import Foundation
 import UIKit
 
 
+//
+// The SpeedViewController is the view that mainly shows the current speed and other driving parameters.
+// The currently playing song - if actually playing - is displayed at the bottom of the screen.
+//
 class SpeedViewController: UIViewController, GMSMapViewDelegate /* necessary for the display of addresses */ {
 
     // ----- Enums ----------------

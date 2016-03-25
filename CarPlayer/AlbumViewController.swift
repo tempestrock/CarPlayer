@@ -293,7 +293,7 @@ class AlbumViewController: BasicViewController, UIScrollViewDelegate {
 
     //
     // This handler is called when the user has swiped up on the main view.
-    // If music is currently playing, this leady to the PlayerViewController.
+    // If music is currently playing, this leads to the PlayerViewController.
     //
     @IBAction func userHasSwipedUp(sender: UISwipeGestureRecognizer) {
 
