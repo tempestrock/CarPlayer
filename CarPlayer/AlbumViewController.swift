@@ -29,7 +29,7 @@ class AlbumViewController: BasicViewController, UIScrollViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // DEBUG println("AlbumViewController.viewDidLoad()")
+        // DEBUG print("AlbumViewController.viewDidLoad()")
 
         // Set cool background color:
         view.backgroundColor = UIColor.blackColor()
@@ -48,7 +48,7 @@ class AlbumViewController: BasicViewController, UIScrollViewDelegate {
     //
     override func viewDidAppear(animated: Bool) {
 
-        // DEBUG println("AlbumViewController.viewDidAppear()")
+        // DEBUG print("AlbumViewController.viewDidAppear()")
 
         // Tell the controller about this:
         _controller.setCurrentlyVisibleView(self)
@@ -127,14 +127,16 @@ class AlbumViewController: BasicViewController, UIScrollViewDelegate {
             }
 
             // Create two tap gesture recognizers that are attached to the button:
-            let singleTap = UITapGestureRecognizerWithFeatures(target: self, action: Selector("albumButtonTapped:"))
+            let singleTap = UITapGestureRecognizerWithFeatures(target: self,
+                                                               action: #selector(AlbumViewController.albumButtonTapped(_:)))
             singleTap.numberOfTapsRequired = 1
             singleTap.setPlayAllButtonPressed(false)
             singleTap.setAlbumID(albumID)
             singleTap.setButtonIBelongTo(button)
             button.addGestureRecognizer(singleTap)
 
-            let doubleTap = UITapGestureRecognizerWithFeatures(target: self, action: Selector("albumButtonDoubleTapped:"))
+            let doubleTap = UITapGestureRecognizerWithFeatures(target: self,
+                                                               action: #selector(AlbumViewController.albumButtonDoubleTapped(_:)))
             doubleTap.numberOfTapsRequired = 2
             doubleTap.setPlayAllButtonPressed(false)
             doubleTap.setAlbumID(albumID)
@@ -204,13 +206,15 @@ class AlbumViewController: BasicViewController, UIScrollViewDelegate {
         button.setTitle(">", forState: UIControlState.Normal)
 
         // Create two tap gesture recognizers that are attached to the button:
-        let singleTap = UITapGestureRecognizerWithFeatures(target: self, action: Selector("albumButtonTapped:"))
+        let singleTap = UITapGestureRecognizerWithFeatures(target: self,
+                                                           action: #selector(AlbumViewController.albumButtonTapped(_:)))
         singleTap.numberOfTapsRequired = 1
         singleTap.setPlayAllButtonPressed(true)
         singleTap.setButtonIBelongTo(button)
         button.addGestureRecognizer(singleTap)
 
-        let doubleTap = UITapGestureRecognizerWithFeatures(target: self, action: Selector("albumButtonDoubleTapped:"))
+        let doubleTap = UITapGestureRecognizerWithFeatures(target: self,
+                                                           action: #selector(AlbumViewController.albumButtonDoubleTapped(_:)))
         doubleTap.numberOfTapsRequired = 2
         doubleTap.setPlayAllButtonPressed(true)
         doubleTap.setButtonIBelongTo(button)
@@ -230,7 +234,7 @@ class AlbumViewController: BasicViewController, UIScrollViewDelegate {
     //
     func albumButtonTapped(gestureRecognizer: UITapGestureRecognizerWithFeatures) {
 
-        // DEBUG println("AlbumViewController.albumButtonTapped()")
+        // DEBUG print("AlbumViewController.albumButtonTapped()")
 
         UIView.animateSlightShrink(
             gestureRecognizer.buttonIBelongTo(),
@@ -245,7 +249,7 @@ class AlbumViewController: BasicViewController, UIScrollViewDelegate {
     //
     func albumButtonDoubleTapped(gestureRecognizer: UITapGestureRecognizerWithFeatures) {
 
-        // DEBUG println("AlbumViewController.albumButtonDoubleTapped()")
+        // DEBUG print("AlbumViewController.albumButtonDoubleTapped()")
 
         UIView.animateStrongShake(
             gestureRecognizer.buttonIBelongTo(),
@@ -309,7 +313,7 @@ class AlbumViewController: BasicViewController, UIScrollViewDelegate {
 
     @IBAction func unwindToViewController (sender: UIStoryboardSegue){
 
-        // DEBUG println("AlbumViewController.unwindToViewController()")
+        // DEBUG print("AlbumViewController.unwindToViewController()")
     }
     
     
@@ -327,11 +331,11 @@ class AlbumViewController: BasicViewController, UIScrollViewDelegate {
     //
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 
-        // DEBUG println("AlbumViewController.prepareForSegue()")
+        // DEBUG print("AlbumViewController.prepareForSegue()")
 
         if segue.identifier == MyBasics.nameOfSegue_albumToPlayer {
 
-            // DEBUG println("AlbumView --> PlayerView")
+            // DEBUG print("AlbumView --> PlayerView")
 
             // this gets a reference to the screen that we're about to transition to
             let playerView = segue.destinationViewController as! PlayerViewController

@@ -120,7 +120,7 @@ class MVC_Controller {
     //
     init() {
 
-        // DEBUG println("MVC_Controller.init()")
+        // DEBUG print("MVC_Controller.init()")
 
         // Initialize the music player as a system music player (continuing to play the music even if the app is closed):
         _musicPlayer = MPMusicPlayerController.systemMusicPlayer()
@@ -303,7 +303,7 @@ class MVC_Controller {
                 // Store the album name for this album ID if this has not been done before:
                 if _albumNameForID[albumID] == nil {
                     _albumNameForID[albumID] = song.albumTitle
-                    // DEBUG println("ID \(albumID) has album title \(_albumNameForID[albumID])")
+                    // DEBUG print("ID \(albumID) has album title \(_albumNameForID[albumID])")
                 }
 
                 // This album ID was unknown so far. => Add it to the list of album IDs:
@@ -367,14 +367,14 @@ class MVC_Controller {
 
         } // for
 
-        // DEBUG println("after loop: \(_initialLoadState)")
+        // DEBUG print("after loop: \(_initialLoadState)")
 
         createOners()
-        // DEBUG println("after oners: \(_initialLoadState)")
+        // DEBUG print("after oners: \(_initialLoadState)")
 
         // --- Create the artificial artist "Playlists" ---
         addPlaylistsAsArtist()
-        // DEBUG println("after play lists: \(_initialLoadState)")
+        // DEBUG print("after play lists: \(_initialLoadState)")
 
         // Create the sorted list of artist short names:
         _sortedArtistShortNames = Array(_longArtistName.keys).sort(<)
@@ -398,7 +398,7 @@ class MVC_Controller {
         if !trackIsMusic {
 
             // We skip this track
-            // DEBUG println("track ”\(track.title!!)\" is not music => skipping")
+            // DEBUG print("track ”\(track.title!!)\" is not music => skipping")
             return false
         }
 
@@ -407,7 +407,7 @@ class MVC_Controller {
         if trackHangsInTheClouds {
 
             // We skip this track
-            // DEBUG println("track ”\(track.title!!)\" is just a dream in the clouds => skipping")
+            // DEBUG print("track ”\(track.title!!)\" is just a dream in the clouds => skipping")
             return false
         }
 
@@ -563,20 +563,20 @@ class MVC_Controller {
 
         let playlistQuery = MPMediaQuery.playlistsQuery()
       //  let collNum = playlistQuery.collections!.count
-        // DEBUG println("number of collections: \(collNum)")
+        // DEBUG print("number of collections: \(collNum)")
 
         let numOfPlaylists = playlistQuery.collections!.count
         var playlistCounter = 0
         let initialLoadStateBefore = _initialLoadState
 
-        // DEBUG println("numOfPlaylists: \(numOfPlaylists)")
+        // DEBUG print("numOfPlaylists: \(numOfPlaylists)")
 
         // Fill the artist dictionary:
         for playlist in playlistQuery.collections! {
 
             _initialLoadState = initialLoadStateBefore + ((Double(playlistCounter) / Double(numOfPlaylists)) * 0.0705)
             playlistCounter += 1
-            // DEBUG println("playlistCounter: \(playlistCounter), _initialLoadState: \(_initialLoadState)")
+            // DEBUG print("playlistCounter: \(playlistCounter), _initialLoadState: \(_initialLoadState)")
 
             let playlistName: String! = playlist.valueForProperty(MPMediaPlaylistPropertyName) as! String!
 
@@ -588,7 +588,7 @@ class MVC_Controller {
 
             let playlistID = playlist.valueForProperty(MPMediaPlaylistPropertyPersistentID) as! NSNumber
 
-            // DEBUG println("\(playlistID): \(playlistName)")
+            // DEBUG print("\(playlistID): \(playlistName)")
 
             // Add the playlist ID to the list of playlist IDs:
             addAlbumIDAtRightPlace(&_albumIDDict[_playlistsTitle]!, albumTitle: playlistName, albumIDToBeAdded: playlistID)
@@ -656,7 +656,7 @@ class MVC_Controller {
                     
                 } else {
                     
-                    // DEBUG println("Skipping \"\(queryItem.title!!)\".")
+                    // DEBUG print("Skipping \"\(queryItem.title!!)\".")
                 }
             }
         }
@@ -743,17 +743,19 @@ class MVC_Controller {
     // Positions the current track to the given position.
     // "newPosition" must be between 0.0 and 1.0.
     //
-    func setCurrentTrackPosition(var newPosition: Double) {
+    func setCurrentTrackPosition(newPosition: Double) {
+
+        var newPos = newPosition
 
         // Correct possibly bad input values:
-        if newPosition < 0.0 {
-            newPosition = 0.0
-        } else if newPosition > 1.0 {
-            newPosition = 1.0
+        if newPos < 0.0 {
+            newPos = 0.0
+        } else if newPos > 1.0 {
+            newPos = 1.0
         }
 
-        let newPositionInSeconds = newPosition * durationOfCurrentTrack()
-        // DEBUG println("MVC_Controller.setCurrentTrackPosition(): newPosition is \(newPosition) = \(newPositionInSeconds)secs.")
+        let newPositionInSeconds = newPos * durationOfCurrentTrack()
+        // DEBUG print("MVC_Controller.setCurrentTrackPosition(): newPosition is \(newPosition) = \(newPositionInSeconds)secs.")
 
         _musicPlayer.currentPlaybackTime = newPositionInSeconds
     }
@@ -786,7 +788,7 @@ class MVC_Controller {
     func setCurrentAlbumIDList(albumIDList: Array<NSNumber>, setShuffleMode: Bool) {
 
         checkIfUserSelectionHasChanged(albumIDList, setShuffleMode: setShuffleMode)
-        // DEBUG println("MVC_Controller.setCurrentAlbumList(): _userSelectionHasChanged: \(_userSelectionHasChanged)")
+        // DEBUG print("MVC_Controller.setCurrentAlbumList(): _userSelectionHasChanged: \(_userSelectionHasChanged)")
 
         _currentAlbumIDList = albumIDList
 
@@ -810,7 +812,7 @@ class MVC_Controller {
         // Check whether the flag has never been set before:
         if _userSelectionHasChanged == nil {
 
-            // DEBUG println("1. -> out")
+            // DEBUG print("1. -> out")
             _userSelectionHasChanged = true
             return
         }
@@ -819,7 +821,7 @@ class MVC_Controller {
         if ((_musicPlayer.shuffleMode == MPMusicShuffleMode.Songs) && !setShuffleMode) ||
             ((_musicPlayer.shuffleMode == MPMusicShuffleMode.Off) && setShuffleMode) {
 
-            // DEBUG println("2. -> out")
+            // DEBUG print("2. -> out")
             _userSelectionHasChanged = true
             return
         }
@@ -827,7 +829,7 @@ class MVC_Controller {
         // Check if the current settings are unknown:
         if (_currentArtist == nil) || (_currentAlbumIDList == nil) || (_currentAlbumIDList!.count == 0) {
 
-            // DEBUG println("3. -> out")
+            // DEBUG print("3. -> out")
             _userSelectionHasChanged = true
             return
         }
@@ -840,7 +842,7 @@ class MVC_Controller {
         // Check the number of albums:
         if _currentAlbumIDList!.count != albumIDList.count {
 
-            // DEBUG println("4. -> out")
+            // DEBUG print("4. -> out")
             _userSelectionHasChanged = true
             return
         }
@@ -850,14 +852,14 @@ class MVC_Controller {
 
             if ((_currentAlbumIDList!).indexOf(albumID) == nil) {
 
-                // DEBUG println("5. (\"\(albumID)\") -> out")
+                // DEBUG print("5. (\"\(albumID)\") -> out")
                 _userSelectionHasChanged = true
                 return
             }
         }
 
         // If we are still here, then no changes have been made:
-        // DEBUG println("6. -> no changes")
+        // DEBUG print("6. -> no changes")
         _userSelectionHasChanged = false
     }
     
@@ -878,11 +880,11 @@ class MVC_Controller {
     func printMusicPlayerPlaybackState(addInfo: String = "") {
 
         switch _musicPlayer.playbackState {
-        case MPMusicPlaybackState.Playing: println("MVC_Controller (\(addInfo)): playbackState is \"playing\".")
-        case MPMusicPlaybackState.Paused: println("MVC_Controller (\(addInfo)): playbackState is \"paused\".")
+        case MPMusicPlaybackState.Playing: print("MVC_Controller (\(addInfo)): playbackState is \"playing\".")
+        case MPMusicPlaybackState.Paused: print("MVC_Controller (\(addInfo)): playbackState is \"paused\".")
         default:
             var val: Int = _musicPlayer.playbackState.rawValue
-            println("MVC_Controller (\(addInfo)): playbackState is \"\(val)\".")
+            print("MVC_Controller (\(addInfo)): playbackState is \"\(val)\".")
         }
     }
 */
@@ -1049,7 +1051,7 @@ class MVC_Controller {
             return false
         }
 
-        // DEBUG println("MVC_Controller.currentTrackHasLyrics(): nowPlayingItem = \(_musicPlayer.nowPlayingItem)")
+        // DEBUG print("MVC_Controller.currentTrackHasLyrics(): nowPlayingItem = \(_musicPlayer.nowPlayingItem)")
 
         // This whole AV stuff is a workaround for a bug in iOS that does not respond the lyrics of a media item directly:
         let songURL = _musicPlayer.nowPlayingItem!.valueForProperty(MPMediaItemPropertyAssetURL) as! NSURL?
@@ -1061,7 +1063,7 @@ class MVC_Controller {
         let asset = AVURLAsset(URL: songURL!, options: nil)
         let lyrics: NSString! = asset.lyrics
 
-        // DEBUG println("MVC_Controller.currentTrackHasLyrics(): \(lyrics)")
+        // DEBUG print("MVC_Controller.currentTrackHasLyrics(): \(lyrics)")
 
         return (lyrics != nil) && (lyrics != "")
     }
@@ -1080,7 +1082,7 @@ class MVC_Controller {
         // Assert that the nowPlayingItem exists:
         if _musicPlayer.nowPlayingItem == nil {
 
-            // DEBUG println("Lyrics: nowPlayingItem not available")
+            // DEBUG print("Lyrics: nowPlayingItem not available")
             return noLyricsAvailable
         }
 
@@ -1095,7 +1097,7 @@ class MVC_Controller {
 
             // Unfortunately, the AssetURL is not reachable.
             // We try to get the lyrics directly:
-            // DEBUG println("Lyrics: songURL not available => trying direct access")
+            // DEBUG print("Lyrics: songURL not available => trying direct access")
             lyrics = _musicPlayer.nowPlayingItem!.lyrics
         }
 
@@ -1106,7 +1108,7 @@ class MVC_Controller {
 
         } else {
 
-            // DEBUG println("Lyrics: lyrics nil or empty")
+            // DEBUG print("Lyrics: lyrics nil or empty")
             return noLyricsAvailable
         }
     }
@@ -1307,7 +1309,7 @@ class MVC_Controller {
             // => We only set the scale and wait for additional values.
 
             _prevPinchScale = pinchScale
-            //DEBUG println("MVC_Controller.setBrightness(): Initializing _prevPinchScale to \(_prevPinchScale!).")
+            //DEBUG print("MVC_Controller.setBrightness(): Initializing _prevPinchScale to \(_prevPinchScale!).")
 
             return
         }
@@ -1339,7 +1341,7 @@ class MVC_Controller {
         }
 
         UIScreen.mainScreen().brightness = curVal
-        //DEBUG println("MVC_Controller.setBrightness(): New brightness value: \(UIScreen.mainScreen().brightness)")
+        //DEBUG print("MVC_Controller.setBrightness(): New brightness value: \(UIScreen.mainScreen().brightness)")
 
         _prevPinchScale = pinchScale
     }
@@ -1351,7 +1353,7 @@ class MVC_Controller {
     func setCurrentlyVisibleView(view: UIViewController) {
 
         _currentlyVisibleView = view
-        //DEBUG println("MVC_Controller.setCurrentlyVisibleView(): View is \(_currentlyVisibleView.title!).")
+        //DEBUG print("MVC_Controller.setCurrentlyVisibleView(): View is \(_currentlyVisibleView.title!).")
 
     }
 
@@ -1399,21 +1401,21 @@ class MVC_Controller {
     //
     // Prints debug output.
     //
-    func printlnAlbumListOfCurrentArtist() {
+    func printAlbumListOfCurrentArtist() {
 
         if (_currentArtist == nil) {
             print("  --> current artist is empty.")
             return
         }
 
-        printlnAlbumListOfArtist(_currentArtist!)
+        printAlbumListOfArtist(_currentArtist!)
     }
 
 
     //
     // Prints debug output.
     //
-    func printlnAlbumListOfArtist(artistName: String) {
+    func printAlbumListOfArtist(artistName: String) {
 
         /*
         print("Album list of artist \(artistName):")
@@ -1473,7 +1475,7 @@ class MVC_Controller {
     }
 
     /*
-    func printlnPlayListOfMusicPlayer() {
+    func printPlayListOfMusicPlayer() {
 
 
     // Store shuffle and repeat mode:
@@ -1493,7 +1495,7 @@ class MVC_Controller {
 
     if firstSong == nil {
 
-    println("Playlist not available.")
+    print("Playlist not available.")
 
     } else {
 
@@ -1501,7 +1503,7 @@ class MVC_Controller {
     var currentSong: MPMediaItem = firstSong!
 
     let counterAsString: String = counter.format("03")
-    println("\(counterAsString).: \(currentSong.title!)")
+    print("\(counterAsString).: \(currentSong.title!)")
 
     _musicPlayer.skipToNextItem()
     currentSong = _musicPlayer.nowPlayingItem
@@ -1510,7 +1512,7 @@ class MVC_Controller {
 
     counter++
     let counterAsString: String = counter.format("03")
-    println("\(counterAsString).: \(currentSong.title!)")
+    print("\(counterAsString).: \(currentSong.title!)")
 
     _musicPlayer.skipToNextItem()
     currentSong = _musicPlayer.nowPlayingItem

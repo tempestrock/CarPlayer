@@ -60,7 +60,7 @@ class ModalViewController: UIViewController {
         // Create an underlying button that closes the view without further action:
         let closeButton = UIButton(type: UIButtonType.Custom)
         closeButton.frame = CGRectMake(0.0, 0.0, CGFloat(MyBasics.screenWidth), CGFloat(MyBasics.screenHeight))
-        closeButton.addTarget(self, action: Selector("closeViewWithoutAction"), forControlEvents: .TouchUpInside)
+        closeButton.addTarget(self, action: #selector(ModalViewController.closeViewWithoutAction), forControlEvents: .TouchUpInside)
         view.addSubview(closeButton)
 
         // Create white, opaque background rectangle:

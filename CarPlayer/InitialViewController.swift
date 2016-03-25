@@ -56,7 +56,7 @@ class InitialViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // DEBUG println("InitialViewController.viewDidLoad()")
+        // DEBUG print("InitialViewController.viewDidLoad()")
 
         _backgroundImage = UIImageView(image: UIImage(named: MyBasics.nameOfImage_Launch))
         _backgroundImage.frame = CGRectMake(0.0, 0.0, CGFloat(MyBasics.screenWidth), CGFloat(MyBasics.screenHeight))
@@ -92,7 +92,9 @@ class InitialViewController: UIViewController {
         view.addSubview(_carIcon)
 
         // Start the checking timer:
-        _waitToStartTimer = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: "checkAllStartingConditions", userInfo: nil, repeats: true)
+        _waitToStartTimer = NSTimer.scheduledTimerWithTimeInterval(0.05,
+                                                                   target: self,
+                                                                   selector: #selector(InitialViewController.checkAllStartingConditions), userInfo: nil, repeats: true)
     }
 
 
@@ -101,11 +103,11 @@ class InitialViewController: UIViewController {
     //
     func checkAllStartingConditions() {
 
-        // DEBUG println("InitialViewController.checkAllStartingConditions()")
+        // DEBUG print("InitialViewController.checkAllStartingConditions()")
 
         let loadState: Double = _controller.initialLoadState()
         _percentageLabel.text = "Loading music library: " + (Int(loadState*100.0)).description + "%"
-        // DEBUG println("displaying \"\(_percentageLabel.text!)\"")
+        // DEBUG print("displaying \"\(_percentageLabel.text!)\"")
 
         if loadState != _previousLoadState {
                 self._carIcon.transform = CGAffineTransformConcat(CGAffineTransformMakeScale(1.0 - CGFloat(loadState), 1.0 - CGFloat(loadState)),
@@ -114,7 +116,7 @@ class InitialViewController: UIViewController {
 
         if loadState == 1.0 {
 
-            // DEBUG println("InitialViewController.checkAllStartingConditions(): Jumping to main view.")
+            // DEBUG print("InitialViewController.checkAllStartingConditions(): Jumping to main view.")
             // Stop the timer:
             _waitToStartTimer.invalidate()
 
@@ -130,7 +132,7 @@ class InitialViewController: UIViewController {
     //
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 
-        // DEBUG println("InitialViewController.prepareForSegue()")
+        // DEBUG print("InitialViewController.prepareForSegue()")
 
         if segue.identifier == MyBasics.nameOfSegue_initialToMain {
 

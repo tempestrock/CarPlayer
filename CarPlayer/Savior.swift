@@ -107,13 +107,13 @@ class Savior {
         if let results = fetchedResults {
 
             let numOfResults: Int = results.count
-            // DEBUG println("Number of results: \(numOfResults)")
+            // DEBUG print("Number of results: \(numOfResults)")
 
             if numOfResults > 0 {
 
                 // Get the latest value:
                 let val: Int = results[numOfResults-1].valueForKey("value") as! Int
-                // DEBUG println("Savior.loadInt(): Loaded value \"\(val)\".")
+                // DEBUG print("Savior.loadInt(): Loaded value \"\(val)\".")
 
                 valueToLoad = val
 

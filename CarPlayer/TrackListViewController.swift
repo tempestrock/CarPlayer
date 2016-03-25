@@ -25,7 +25,7 @@ class TracklistViewController: ModalViewController {
         super.viewDidLoad() // Paints the black background rectangle
 
         // Set notification handler for music changing in the background. The complete track list is re-painted
-        _controller.setNotificationHandler(self, notificationFunctionName: "createTrackList")
+        _controller.setNotificationHandler(self, notificationFunctionName: #selector(TracklistViewController.createTrackList))
 
         createTrackList()
     }
@@ -36,7 +36,7 @@ class TracklistViewController: ModalViewController {
     //
     func createTrackList() {
 
-        // DEBUG println("TrackListViewController.createTrackList()")
+        // DEBUG print("TrackListViewController.createTrackList()")
 
         // Set some hard-coded limit for the number of tracks to be shown:
         let maxNum = MyBasics.TrackListView_MaxNumberOfTracks
@@ -56,7 +56,9 @@ class TracklistViewController: ModalViewController {
             if ySizeOfButton < CGFloat(heightOfView) - 20.0 {
                 ySizeOfButton = CGFloat(heightOfView) - 20.0
             }
-            closeButtonOnScrollView.addTarget(self, action: Selector("closeViewWithoutAction"), forControlEvents: .TouchUpInside)
+            closeButtonOnScrollView.addTarget(self,
+                                              action: #selector(ModalViewController.closeViewWithoutAction),
+                                              forControlEvents: .TouchUpInside)
             closeButtonOnScrollView.frame = CGRectMake(CGFloat(xPosOfView) + 10.0, CGFloat(yPosOfView) + 5.0, CGFloat(widthOfView) - 20.0, ySizeOfButton)
             scrollView.addSubview(closeButtonOnScrollView)
 
@@ -114,7 +116,7 @@ class TracklistViewController: ModalViewController {
             button.titleLabel!.textAlignment = NSTextAlignment.Left
             button.frame = CGRect(x: 110, y: curYPos, width: widthOfView, height: heightOfView)  // width and height are just dummies due to following "sizeToFit"
             button.sizeToFit()
-            button.addTarget(self, action: Selector("trackNameTapped:"), forControlEvents: UIControlEvents.TouchUpInside)
+            button.addTarget(self, action: #selector(TracklistViewController.trackNameTapped(_:)), forControlEvents: UIControlEvents.TouchUpInside)
             button.setMediaItem(track)
             scrollView.addSubview(button)
 
@@ -155,12 +157,12 @@ class TracklistViewController: ModalViewController {
         let minVal: CGFloat = 80.0
         let maxVal: CGFloat = scrollView.contentSize.height - CGFloat(self.heightOfView) + CGFloat(self.yPosOfView / 2)
 
-        // DEBUG println("yPosOfNowPlayingItem: \(yPosOfNowPlayingItem), maxVal: \(maxVal)")
+        // DEBUG print("yPosOfNowPlayingItem: \(yPosOfNowPlayingItem), maxVal: \(maxVal)")
 
         if totalHeightOfScrollView < self.heightOfView {
 
             // The list is smaller than the screen height. => Set the scroll position to the top:
-            // DEBUG println("list is smaller than screen height")
+            // DEBUG print("list is smaller than screen height")
             yPosOfNowPlayingItem = 0
 
             return
@@ -170,17 +172,17 @@ class TracklistViewController: ModalViewController {
 
             // This track is among the first ones or not on the list (if it is -1). => Move to the top:
             yPosOfNowPlayingItem = 0
-            // DEBUG println("track is one of the first tracks => moving yPos to the top")
+            // DEBUG print("track is one of the first tracks => moving yPos to the top")
 
             return
         }
 
         yPosOfNowPlayingItem -= minVal
-        // DEBUG println("track is in mid range => moving yPos up by \(minVal) to \(yPosOfNowPlayingItem)")
+        // DEBUG print("track is in mid range => moving yPos up by \(minVal) to \(yPosOfNowPlayingItem)")
 
         if yPosOfNowPlayingItem >= maxVal {
 
-            // DEBUG println("yPos too high -> setting yPos to \(maxVal)")
+            // DEBUG print("yPos too high -> setting yPos to \(maxVal)")
             yPosOfNowPlayingItem = maxVal
         }
     }
@@ -202,7 +204,7 @@ class TracklistViewController: ModalViewController {
     func trackNameTapped(sender: UIButtonWithFeatures) {
 
       //  var trackName: String = sender.mediaItem().title!
-        // DEBUG println("New track title: \"\(trackName)\"")
+        // DEBUG print("New track title: \"\(trackName)\"")
 
         // Set the chosen track:
         _controller.setTrack(sender.mediaItem())

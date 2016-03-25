@@ -35,7 +35,7 @@ class BasicViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // DEBUG println("BasicViewController.viewDidLoad()")
+        // DEBUG print("BasicViewController.viewDidLoad()")
 
         InitializeScrollView()
     }
@@ -64,7 +64,7 @@ class BasicViewController: UIViewController {
         let widthOfLetterLine = MyBasics.screenWidth * 95 / 100         // width of the complete letter line
         let xStep = widthOfLetterLine / numOfLetters                    // x step per letter
 
-        // DEBUG println("numOfLetters: \(numOfLetters), xStep: \(xStep)")
+        // DEBUG print("numOfLetters: \(numOfLetters), xStep: \(xStep)")
 
         let heightOfEntry = 35;     // HARDCODED
 
@@ -76,7 +76,7 @@ class BasicViewController: UIViewController {
 
         for letter in sortedLetterKeys {
 
-            //DEBUG println("letter: \(letter) at pos \(xPos)")
+            //DEBUG print("letter: \(letter) at pos \(xPos)")
 
             // Make a button:
             let button = UIButton(type: UIButtonType.System)
@@ -85,7 +85,7 @@ class BasicViewController: UIViewController {
             button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
             button.setTitle("\(letter)", forState: UIControlState.Normal)
             button.titleLabel!.font = MyBasics.fontForSmallText
-            button.addTarget(self, action: Selector("letterPressed:"), forControlEvents: .TouchDown)
+            button.addTarget(self, action: #selector(BasicViewController.letterPressed(_:)), forControlEvents: .TouchDown)
 
             self.view.addSubview(button)
 

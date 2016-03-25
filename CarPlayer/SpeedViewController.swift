@@ -102,16 +102,19 @@ class SpeedViewController: UIViewController, GMSMapViewDelegate /* necessary for
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // DEBUG println("SpeedViewController.viewDidLoad()")
+        // DEBUG print("SpeedViewController.viewDidLoad()")
 
         // Create some test calls:
         //DEBUG NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "createTestData", userInfo: nil, repeats: true)
 
         // Set notification handler for music changing in the background:
-        _controller.setNotificationHandler(self, notificationFunctionName: "receivedNotificationOfChange:")
+        _controller.setNotificationHandler(self,
+                                           notificationFunctionName: #selector(SpeedViewController.receivedNotificationOfChange(_:)))
 
         // Set the progress timer to update the progress bar:
-        _progressTimer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: "progressTimerFired", userInfo: nil, repeats: true)
+        _progressTimer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self,
+                                                                selector: #selector(SpeedViewController.progressTimerFired),
+                                                                userInfo: nil, repeats: true)
 
         // Set some parameters for the map:
         setMapSpecifics()
@@ -160,7 +163,7 @@ class SpeedViewController: UIViewController, GMSMapViewDelegate /* necessary for
     //
     func progressTimerFired() {
 
-        // DEBUG println("SpeedViewController.progressTimerFired()")
+        // DEBUG print("SpeedViewController.progressTimerFired()")
 
         // Show current playback progress:
         _progressBar.progress = Float(_controller.currentPlaybackTime() / _controller.nowPlayingItem().playbackDuration)
@@ -172,7 +175,7 @@ class SpeedViewController: UIViewController, GMSMapViewDelegate /* necessary for
     //
     func receivedNotificationOfChange(notification: NSNotification) {
 
-        // println("SpeedViewController.receivedNotificationOfChange()")
+        // DEBUG print("SpeedViewController.receivedNotificationOfChange()")
         setTrackInfo()
     }
     
@@ -340,7 +343,7 @@ class SpeedViewController: UIViewController, GMSMapViewDelegate /* necessary for
         createLabelAnimation(_trackInfoLabel,
             width: MyBasics.SpeedView_TrackInfoLabel_Width, height: MyBasics.SpeedView_TrackInfoLabel_Height,
             startingFrame: &_trackInfoLabelStartingFrame,
-            timerFuncToCall: "trackInfoTextMoveTimerFired",
+            timerFuncToCall: #selector(SpeedViewController.trackInfoTextMoveTimerFired),
             animationFunction: trackInfoTextMoveTimerFired,
             timer: &_trackInfoTextMoveTimer
         )
@@ -394,7 +397,7 @@ class SpeedViewController: UIViewController, GMSMapViewDelegate /* necessary for
                 timer = NSTimer.scheduledTimerWithTimeInterval(MyBasics.SpeedView_TimeForToWaitForNextAnimation,
                     target: self, selector: timerFuncToCall, userInfo: nil, repeats: false)
 
-                // DEBUG println("\(timer.description) started.")
+                // DEBUG print("\(timer.description) started.")
 
             } else {
 
@@ -410,10 +413,10 @@ class SpeedViewController: UIViewController, GMSMapViewDelegate /* necessary for
     //
     func trackInfoTextMoveTimerFired() {
 
-        // DEBUG println("SpeedViewController.trackInfoTextMoveTimerFired()")
+        // DEBUG print("SpeedViewController.trackInfoTextMoveTimerFired()")
 
         _trackInfoTextMoveTimer = NSTimer.scheduledTimerWithTimeInterval(MyBasics.SpeedView_TimeForAnimation + MyBasics.SpeedView_TimeForToWaitForNextAnimation * 2,
-            target: self, selector: "trackInfoTextMoveTimerFired", userInfo: nil, repeats: false)
+            target: self, selector: #selector(SpeedViewController.trackInfoTextMoveTimerFired), userInfo: nil, repeats: false)
 
         UIView.animateLongishLabel(_trackInfoLabel, frameAroundLabel: _trackInfoLabelStartingFrame,
             timeForAnimation: MyBasics.SpeedView_TimeForAnimation, timeToWaitForNextAnimation: MyBasics.SpeedView_TimeForToWaitForNextAnimation,
@@ -501,7 +504,7 @@ class SpeedViewController: UIViewController, GMSMapViewDelegate /* necessary for
     //    let previousCarZoom: Float = carZoom(previousMapZoom)
         let currentCarZoom: Float = carZoom(currentMapZoom)
      //   let carZoomChange: CGFloat = CGFloat(currentCarZoom / previousCarZoom)
-        // DEBUG println("car zooms: \(previousCarZoom) -> \(currentCarZoom) => \(carZoomChange)")
+        // DEBUG print("car zooms: \(previousCarZoom) -> \(currentCarZoom) => \(carZoomChange)")
         
         UIView.animateWithDuration(0.4,
             animations: {
@@ -540,7 +543,7 @@ class SpeedViewController: UIViewController, GMSMapViewDelegate /* necessary for
 
             // We have to find out the difference between the new and the previous course:
      //       var courseChange: Double = _currentCourse - previousCourse
-            // DEBUG println("courses: \(previousCourse) -> \(_currentCourse) => \(courseChange)")
+            // DEBUG print("courses: \(previousCourse) -> \(_currentCourse) => \(courseChange)")
 
             UIView.animateWithDuration(0.5,
                 animations: {
@@ -602,7 +605,7 @@ class SpeedViewController: UIViewController, GMSMapViewDelegate /* necessary for
                     if !firstLine.hasPrefix("Salisbury") && firstLine != "" {
 
                         // The address is really reasonable.
-                        // DEBUG println("address found: \"\(lines[0])\"")
+                        // DEBUG print("address found: \"\(lines[0])\"")
                         self._addressLabel.text = firstLine
                //         let labelHeight = self._addressLabel.intrinsicContentSize().height
                         self._addressLabel.alpha = 1.0
@@ -668,8 +671,8 @@ class SpeedViewController: UIViewController, GMSMapViewDelegate /* necessary for
     //
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 
-        // DEBUG println("SpeedViewController.prepareForSegue()")
-        // DEBUG println("SpeedView --> \(segue.destinationViewController.title!!)")
+        // DEBUG print("SpeedViewController.prepareForSegue()")
+        // DEBUG print("SpeedView --> \(segue.destinationViewController.title!!)")
 
         stopAllTimers()
     }
@@ -682,7 +685,7 @@ class SpeedViewController: UIViewController, GMSMapViewDelegate /* necessary for
 
         if _progressTimer.valid {
             _progressTimer.invalidate()
-            // DEBUG println("SpeedViewController.stopAllTimers(): _progressTimer stopped.")
+            // DEBUG print("SpeedViewController.stopAllTimers(): _progressTimer stopped.")
         }
 
         stopTextMoveTimer()
@@ -696,7 +699,7 @@ class SpeedViewController: UIViewController, GMSMapViewDelegate /* necessary for
 
         if _trackInfoTextMoveTimer.valid {
             _trackInfoTextMoveTimer.invalidate()
-            // DEBUG println("SpeedViewController.stopAllTimers(): _trackInfoTextMoveTimer stopped.")
+            // DEBUG print("SpeedViewController.stopAllTimers(): _trackInfoTextMoveTimer stopped.")
         }
     }
 
