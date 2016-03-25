@@ -231,7 +231,7 @@ extension UIView {
         timeForAnimation: Double, timeToWaitForNextAnimation: Double,
         totalWidth: CGFloat) {
 
-        // println("piep: \(timeForAnimation), \(timeToWaitForNextAnimation), \(frameAroundLabel), \(totalWidth)")
+        // print("piep: \(timeForAnimation), \(timeToWaitForNextAnimation), \(frameAroundLabel), \(totalWidth)")
 
         // Move text to the left:
         UIView.animateWithDuration(
@@ -453,7 +453,7 @@ extension UIColor {
         let product: CGFloat = r * g * b
         let twoValuesAreHigh: Bool = ((r * g > 0.8) || (r * b > 0.8) || (g * b > 0.8))
 
-        // DEBUG println("UIColor.isLightColor(): product = \(product), twoValuesAreHigh: \(twoValuesAreHigh)")
+        // DEBUG print("UIColor.isLightColor(): product = \(product), twoValuesAreHigh: \(twoValuesAreHigh)")
 
         if product < 0.3 && twoValuesAreHigh {
 

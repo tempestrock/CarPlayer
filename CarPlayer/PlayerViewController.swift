@@ -16,10 +16,10 @@ import CoreLocation
 func handleTap(gesture: UITapGestureRecognizer) {
 let tapLocation = gesture.locationInView(bug.superview)
 if bug.layer.presentationLayer().frame.contains(tapLocation) {
-println("Bug tapped!")
+print("Bug tapped!")
 // add bug-squashing code here
 } else {
-println("Bug not tapped!")
+print("Bug not tapped!")
 }
 }
 
@@ -116,16 +116,19 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // DEBUG println("PlayerViewController.viewDidLoad()")
+        // DEBUG print("PlayerViewController.viewDidLoad()")
 
         // Tell the locator who to call:
         _locator.setNotifierFunction(self.updateSpeedDisplay)
 
         // Set notification handler for music changing in the background:
-        _controller.setNotificationHandler(self, notificationFunctionName: "updateDisplayedInformation")
+        _controller.setNotificationHandler(self,
+                                           notificationFunctionName: #selector(PlayerViewController.updateDisplayedInformation))
 
         // Set the progress timer to update the progress bar:
-        _progressTimer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: "updateProgressBar", userInfo: nil, repeats: true)
+        _progressTimer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self,
+                                                                selector: #selector(PlayerViewController.updateProgressBar),
+                                                                userInfo: nil, repeats: true)
 
         // Create the speed display:
         createSpeedDisplay()
@@ -171,7 +174,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     //
     func updateDisplayedInformation() {
 
-        // DEBUG println("PlayerViewController.updateDisplayedInformation()")
+        // DEBUG print("PlayerViewController.updateDisplayedInformation()")
 
         // Set labels and enable or disable some buttons:
         setLabelsAndButtons()
@@ -290,7 +293,9 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
         _speedDisplayModeButton.frame = _artistLabel.frame
         // DEBUG _speedDisplayModeButton.backgroundColor = UIColor.blackColor()
         // DEBUG _speedDisplayModeButton.alpha = 0.5
-        _speedDisplayModeButton.addTarget(self, action: Selector("speedButtonTapped"), forControlEvents: .TouchUpInside)
+        _speedDisplayModeButton.addTarget(self,
+                                          action: #selector(PlayerViewController.speedButtonTapped),
+                                          forControlEvents: .TouchUpInside)
         _speedDisplayModeButton.layer.zPosition = _zPosition_SliderButtons
         _artistContainerView.addSubview(_speedDisplayModeButton)
     }
@@ -301,7 +306,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     //
     func createTrackTitleDisplay() {
 
-        // DEBUG println("PlayerViewController.createTrackTitleDisplay()")
+        // DEBUG print("PlayerViewController.createTrackTitleDisplay()")
 
         let nowPlayingItem = _controller.nowPlayingItem()
 
@@ -363,7 +368,8 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
         // Add the pan gesture recognizer for the switching to the next track if we have more than one track:
         if !_controller.currentNumberOfTracksIsKnown() || _controller.currentNumberOfTracks() > 1 {
 
-            let panGesture = UIPanGestureRecognizer(target: self, action: Selector("trackTitleLabelPanned:"))
+            let panGesture = UIPanGestureRecognizer(target: self,
+                                                    action: #selector(PlayerViewController.trackTitleLabelPanned(_:)))
             panGesture.delegate = self
             _trackTitleContainerView.addGestureRecognizer(panGesture)
         }
@@ -395,7 +401,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     //
     func createAlbumDisplay() {
 
-        // DEBUG println("PlayerViewController.createAlbumDisplay()")
+        // DEBUG print("PlayerViewController.createAlbumDisplay()")
 
         let nowPlayingItem = _controller.nowPlayingItem()
 
@@ -443,7 +449,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     //
     func updateProgressBar() {
 
-        // DEBUG println("PlayerViewController.updateProgressBar()")
+        // DEBUG print("PlayerViewController.updateProgressBar()")
         // DEBUG _controller.printMusicPlayerPlaybackState(addInfo: "updateProgressBar()")
 
         // Show current playback progress:
@@ -456,13 +462,13 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     //
     func animationTimerFired() {
 
-        // DEBUG println("PlayerViewController.animationTimerFired()")
+        // DEBUG print("PlayerViewController.animationTimerFired()")
 
         // Reset the timer that animates longish labels if it is not already running:
         _animationTimer = NSTimer.scheduledTimerWithTimeInterval(
             MyBasics.PlayerView_TimeForAnimation + MyBasics.PlayerView_TimeForToWaitForNextAnimation * 2,
             target: self,
-            selector: "animationTimerFired",
+            selector: #selector(PlayerViewController.animationTimerFired),
             userInfo: nil,
             repeats: false)
 
@@ -542,7 +548,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
 
         // Get the "lightness factor" out of the current background color:
         let lightnessFactor = backColor.lightnessFactor()
-        // DEBUG println("color = \(backColor), lightnessFactor = \(lightnessFactor)")
+        // DEBUG print("color = \(backColor), lightnessFactor = \(lightnessFactor)")
 
         if lightnessFactor > 0.0 {
 
@@ -584,7 +590,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     //
     func createSliderButtons() {
 
-        // DEBUG println("PlayerViewController.createSliderButtons()")
+        // DEBUG print("PlayerViewController.createSliderButtons()")
 
         // Define the number of slider buttons:
         let numberOfButtons: Int = 50
@@ -592,7 +598,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
         // Remove possibly previously existing buttons (this is necessary due to a bug somewhere):
         if _sliderButton != nil {
 
-            // DEBUG println("  Removing previous buttons.")
+            // DEBUG print("  Removing previous buttons.")
             // Remove previous buttons first:
             for button in _sliderButton {
                 button.removeFromSuperview()
@@ -608,7 +614,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
             let button = UIButtonWithFeatures(type: UIButtonType.Custom)
             // DEBUG button.backgroundColor = UIColor.blackColor()
             // DEBUG button.alpha = 0.5
-            button.addTarget(self, action: Selector("sliderButtonTapped:"), forControlEvents: .TouchDown)
+            button.addTarget(self, action: #selector(PlayerViewController.sliderButtonTapped(_:)), forControlEvents: .TouchDown)
             button.setPosition(Double(index) / Double(numberOfButtons))
             button.layer.zPosition = _zPosition_SliderButtons
 
@@ -626,7 +632,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     //
     func updateSliderButtons() {
 
-        // DEBUG println("PlayerViewController.updateSliderButtons() with speed display mode \(_controller.speedDisplayMode())")
+        // DEBUG print("PlayerViewController.updateSliderButtons() with speed display mode \(_controller.speedDisplayMode())")
 
         let xStartPos: CGFloat = MyBasics.PlayerView_SliderButtons_XStartPos(_controller.speedDisplayMode())
         let yPos: CGFloat = MyBasics.PlayerView_SliderButtons_YPos(_controller.speedDisplayMode())
@@ -655,7 +661,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
         _animationTimer = NSTimer.scheduledTimerWithTimeInterval(
             MyBasics.PlayerView_TimeForToWaitForNextAnimation,
             target: self,
-            selector: "animationTimerFired",
+            selector: #selector(PlayerViewController.animationTimerFired),
             userInfo: nil,
             repeats: false)
 
@@ -675,14 +681,14 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
 
         // Get the translation data from the recognizer, i.e. the position of the panning finger in x direction:
         var translation: CGFloat = recognizer.translationInView(self.view).x
-        // DEBUG println("translation: \(translation)")
+        // DEBUG print("translation: \(translation)")
 
         // We know that the view we are looking at is the track title:
         let pannedView = recognizer.view!
 
         if translation == _previousTranslation {
 
-            // DEBUG println("panning stopped -> back to normal size")
+            // DEBUG print("panning stopped -> back to normal size")
             // This is the signal that the user stopped panning.
             // => Scale the title back to the normal size:
             UIView.animateWithDuration(
@@ -717,7 +723,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
 
         // Define the scale factor for the actual scaling:
         let scaleFactor: CGFloat = 1.0 + translation / CGFloat(MyBasics.PlayerView_ArtistLabel_Width / 2)
-        // DEBUG println("scaleFactor: \(scaleFactor)")
+        // DEBUG print("scaleFactor: \(scaleFactor)")
 
         // Scale the track title to the necessary format:
         pannedView.alpha = scaleFactor
@@ -728,7 +734,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
 
         if scaleFactor < scaleThreshold {
 
-            // DEBUG println("threshold reached")
+            // DEBUG print("threshold reached")
             // We have reached a threshold that says that the user really wants to switch the track.
             _userSwitchedTrack = true
 
@@ -870,7 +876,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     //
     func moveLabels() {
 
-        // DEBUG println("PlayerViewController.moveLabels()")
+        // DEBUG print("PlayerViewController.moveLabels()")
 
         let delayForArtist: [Double] = [ 0.1, 0.0, 0.0 ]
         let delayForProgressBar: Double = 0.05
@@ -1002,8 +1008,8 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     //
     func sliderButtonTapped(sender: UIButtonWithFeatures) {
 
-        // DEBUG println("PlayerViewController.sliderButtonTapped()")
-        // DEBUG println("  Sender's position: \(sender.position())")
+        // DEBUG print("PlayerViewController.sliderButtonTapped()")
+        // DEBUG print("  Sender's position: \(sender.position())")
 
         // Animate the new progress bar:
         UIView.animateSlightGrowthInYDir(
@@ -1033,7 +1039,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     //
     @IBAction func unwindToViewController (sender: UIStoryboardSegue){
 
-        // DEBUG println("PlayerViewController.unwindToViewController()")
+        // DEBUG print("PlayerViewController.unwindToViewController()")
 
         // Tell the locator again to call our notifier function as this was changed by the speed view:
         _locator.setNotifierFunction(self.updateSpeedDisplay)
@@ -1048,7 +1054,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     //
     @IBAction func userHasSwipedUp(sender: UISwipeGestureRecognizer) {
 
-        // DEBUG println("PlayerViewController.userHasSwipedUp()")
+        // DEBUG print("PlayerViewController.userHasSwipedUp()")
 
         performSegueWithIdentifier(MyBasics.nameOfSegue_playerToSpeed, sender: self)
     }
@@ -1059,14 +1065,14 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     //
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 
-        // DEBUG println("PlayerViewController.prepareForSegue()")
-        // DEBUG println("PlayerView --> \(segue.destinationViewController.title!!)")
+        // DEBUG print("PlayerViewController.prepareForSegue()")
+        // DEBUG print("PlayerView --> \(segue.destinationViewController.title!!)")
 
         if segue.destinationViewController.title! != MyBasics.nameOfSpeedView {
 
             // This is a seque that either goes to the album or the main view.
             // We do not need the running timers anymore:
-            // DEBUG println("PlayerViewController.prepareForSegue(): stopping all timers.")
+            // DEBUG print("PlayerViewController.prepareForSegue(): stopping all timers.")
             stopAllTimers()
 
         } else {
@@ -1090,7 +1096,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     //
     @IBAction func userHasPinched(sender: UIPinchGestureRecognizer) {
 
-        // DEBUG println("PlayerControllerView.userHasPinched()")
+        // DEBUG print("PlayerControllerView.userHasPinched()")
         _controller.setBrightness(sender.scale)
         
     }
@@ -1103,7 +1109,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
 
         if _progressTimer.valid {
             _progressTimer.invalidate()
-            // DEBUG println("_progressTimer stopped.")
+            // DEBUG print("_progressTimer stopped.")
         }
 
         stopAnimationTimer()
@@ -1118,7 +1124,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
         if (_animationTimer != nil) && _animationTimer.valid {
             _animationTimer.invalidate()
             _animationTimer = nil
-            // DEBUG println("Animation timer stopped.")
+            // DEBUG print("Animation timer stopped.")
         }
     }
 }

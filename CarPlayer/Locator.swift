@@ -127,10 +127,10 @@ class Locator: CLLocationManager, CLLocationManagerDelegate {
         _notifierFunction!(speedAsInt, latString, longString, altString, courseString, course, coord)
 
             /*
-            println("Coord:    \(latString), \(longString)")
-            println("Speed:    \(speedString)")
-            println("Altitude: \(altString)")
-            println("Course:   \(courseString)")
+            print("Coord:    \(latString), \(longString)")
+            print("Speed:    \(speedString)")
+            print("Altitude: \(altString)")
+            print("Course:   \(courseString)")
             */
     }
 
@@ -151,7 +151,7 @@ class Locator: CLLocationManager, CLLocationManagerDelegate {
     //
     func getNiceStringFromCoord(coord: Double, posChar: Character, negChar: Character) -> String {
 
-        //      println("Coord: \(coord)")
+        //      print("Coord: \(coord)")
 
         let separatorChar = (_useGermanDecimals ? "," : ".")
 
@@ -197,7 +197,7 @@ class Locator: CLLocationManager, CLLocationManagerDelegate {
         // Append "N", "S", "E", or "W":
         resultStr.append(finalChar)
 
-        //     println(" --> " + resultStr)
+        //     print(" --> " + resultStr)
 
         return resultStr
 

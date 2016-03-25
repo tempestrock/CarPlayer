@@ -12,7 +12,7 @@ class TransitionManager_Rotating: TransitionManager_Base  {
     //
     override func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
 
-        // DEBUG println("TransitionManager_Rotating.animateTransition()")
+        // DEBUG print("TransitionManager_Rotating.animateTransition()")
         
         // Get reference to our fromView, toView and the container view that we should perform the transition in:
         let container = transitionContext.containerView()
@@ -188,7 +188,7 @@ class TransitionManager_Base: NSObject, UIViewControllerAnimatedTransitioning, U
         presentingController presenting: UIViewController,
         sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
 
-        // DEBUG println("TransitionManager_Base.animationControllerForPresentedController()")
+        // DEBUG print("TransitionManager_Base.animationControllerForPresentedController()")
 
         // These methods are the perfect place to set our `presenting` flag to either true or false - voila!
         self.presenting = true
@@ -201,7 +201,7 @@ class TransitionManager_Base: NSObject, UIViewControllerAnimatedTransitioning, U
     //
     func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
 
-        // DEBUG println("TransitionManager_Base.animationControllerForDismissedController()")
+        // DEBUG print("TransitionManager_Base.animationControllerForDismissedController()")
 
         self.presenting = false
         return self

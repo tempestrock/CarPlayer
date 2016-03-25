@@ -61,10 +61,11 @@ class LyricsViewController: ModalViewController, UITextViewDelegate {
         super.viewDidLoad()
 
         // Set notification handler for music changing in the background:
-        _controller.setNotificationHandler(self, notificationFunctionName: "setLyricsText")
+        _controller.setNotificationHandler(self, notificationFunctionName: #selector(LyricsViewController.setLyricsText))
 
         // Create an underlying close button also on the scrollview:
-        _closeButtonOnScrollView.addTarget(self, action: Selector("closeViewWithoutAction"), forControlEvents: .TouchUpInside)
+        _closeButtonOnScrollView.addTarget(self, action: #selector(ModalViewController.closeViewWithoutAction),
+                                           forControlEvents: .TouchUpInside)
         _lyricsTextView.addSubview(_closeButtonOnScrollView)
 
         // Set basic stuff for scrollview:
@@ -77,7 +78,7 @@ class LyricsViewController: ModalViewController, UITextViewDelegate {
         // This is for making it non-editable:
         _lyricsTextView.delegate = self
 
-        // DEBUG println(_controller.currentLyrics())
+        // DEBUG print(_controller.currentLyrics())
 
         view.addSubview(_lyricsTextView)
 
@@ -90,7 +91,7 @@ class LyricsViewController: ModalViewController, UITextViewDelegate {
     //
     func setLyricsText() {
 
-        // DEBUG println("LyricsViewController.setLyricsText()")
+        // DEBUG print("LyricsViewController.setLyricsText()")
 
         // Calculate some general values that are needed for scrolling afterwards. Explanations of the meanings see above.
         _timeValWhenScrollingStarts = _secondsThatScrollingStartsAfterTrackStarts / _controller.durationOfCurrentTrack()
@@ -113,11 +114,11 @@ class LyricsViewController: ModalViewController, UITextViewDelegate {
         let heightOfCloseButton: CGFloat = (_realContentHeight > CGFloat(self.heightOfView) ? _realContentHeight : CGFloat(self.heightOfView))
         _closeButtonOnScrollView.frame = CGRectMake(CGFloat(xPosOfView), CGFloat(yPosOfView), CGFloat(widthOfView), heightOfCloseButton)
         _lyricsTextView.frame = CGRectMake(CGFloat(xPosOfView) + 10.0, CGFloat(yPosOfView) + 5.0, CGFloat(widthOfView) - 20.0, CGFloat(heightOfView) - 20.0)
-        //DEBUG println("-------------")
-        //DEBUG println("frame of button: \(_closeButtonOnScrollView.frame)")
-        //DEBUG println("frame of lyricsTextView: \(_lyricsTextView.frame)")
-        //DEBUG println("real content height: \(_realContentHeight)")
-        //DEBUG println("-------------")
+        //DEBUG print("-------------")
+        //DEBUG print("frame of button: \(_closeButtonOnScrollView.frame)")
+        //DEBUG print("frame of lyricsTextView: \(_lyricsTextView.frame)")
+        //DEBUG print("real content height: \(_realContentHeight)")
+        //DEBUG print("-------------")
 
         // For the case that we previously showed some lyrics of a different track, rewind to the top:
         UIView.jumpSpringyToPosition(_lyricsTextView, pointToJumpTo: CGPoint(x: 0.0, y: 0.0))
@@ -128,13 +129,13 @@ class LyricsViewController: ModalViewController, UITextViewDelegate {
             _progressTimer = NSTimer.scheduledTimerWithTimeInterval(
                 _lyricsScrollFrequency,
                 target: self,
-                selector: "updateLyricsPosition",
+                selector: #selector(LyricsViewController.updateLyricsPosition),
                 userInfo: nil,
                 repeats: true)
-            // DEBUG println("Progress timer set.")
+            // DEBUG print("Progress timer set.")
 
         } else {
-            // DEBUG println("Lyrics are smaller than screen height => No scrolling necessary")
+            // DEBUG print("Lyrics are smaller than screen height => No scrolling necessary")
         }
     }
 
@@ -144,7 +145,7 @@ class LyricsViewController: ModalViewController, UITextViewDelegate {
     //
     func updateLyricsPosition() {
 
-        // DEBUG println("LyricsViewController.updateLyricsPosition")
+        // DEBUG print("LyricsViewController.updateLyricsPosition")
 
         // The current progress value is a value between 0.0 and 1.0, representing the progress of the playing track:
         let currentProgressValue: Double = _controller.progressOfCurrentlyPlayingTrack()
@@ -166,7 +167,7 @@ class LyricsViewController: ModalViewController, UITextViewDelegate {
             // This may happen if the track has played almost to the end and the user then start looking at the lyrics.
 
             // Set the height of the textView's content size manually:
-            // DEBUG println("Content height not final, yet: \(positionOnScrollView) > \(_lyricsTextView.contentSize.height) => Setting height to \(_realContentHeight).")
+            // DEBUG print("Content height not final, yet: \(positionOnScrollView) > \(_lyricsTextView.contentSize.height) => Setting height to \(_realContentHeight).")
             _lyricsTextView.contentSize.height = _realContentHeight
 
         } else {
@@ -176,7 +177,7 @@ class LyricsViewController: ModalViewController, UITextViewDelegate {
             if positionOnScrollView >= maxPosition {
 
                 // We can stop scrolling
-                // DEBUG println("Maximum position reached.")
+                // DEBUG print("Maximum position reached.")
                 stopAutomaticLyricsScrolling()
             }
         }
@@ -210,7 +211,7 @@ class LyricsViewController: ModalViewController, UITextViewDelegate {
         // Calculate the position on the scroll view by taking the position in the norm area and looking at it in relation to the scrollview's height:
         position = CGFloat(positionVal) * _realContentHeight
 
-        // DEBUG println("maxVal: \(maxVal), positionVal: \(positionVal), position: \(position)")
+        // DEBUG print("maxVal: \(maxVal), positionVal: \(positionVal), position: \(position)")
     }
 
 
@@ -220,7 +221,7 @@ class LyricsViewController: ModalViewController, UITextViewDelegate {
     //
     func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
 
-        // DEBUG println("LyricsViewController.scrollViewDidEndDragging()")
+        // DEBUG print("LyricsViewController.scrollViewDidEndDragging()")
         stopAutomaticLyricsScrolling()
     }
 
@@ -233,7 +234,7 @@ class LyricsViewController: ModalViewController, UITextViewDelegate {
         if _progressTimer != nil {
 
             _progressTimer.invalidate()
-            // DEBUG println("Automatic scrolling stopped")
+            // DEBUG print("Automatic scrolling stopped")
         }
     }
 
@@ -243,7 +244,7 @@ class LyricsViewController: ModalViewController, UITextViewDelegate {
     //
     override func closeViewWithoutAction() {
 
-        // DEBUG println("LyricsViewController.closeViewWithoutAction()")
+        // DEBUG print("LyricsViewController.closeViewWithoutAction()")
 
         // Stop the progress timer:
         stopAutomaticLyricsScrolling()

@@ -26,7 +26,7 @@ class MainViewController: BasicViewController, UIScrollViewDelegate  {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // DEBUG println("MainViewController.viewDidLoad()")
+        // DEBUG print("MainViewController.viewDidLoad()")
 
         // Tell the controller about this:
         _controller.setCurrentlyVisibleView(self)
@@ -36,7 +36,7 @@ class MainViewController: BasicViewController, UIScrollViewDelegate  {
         // Set a notification for the case that the app is closed an opened later:
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: "handleApplicationDidBecomeActiveNotification:",
+            selector: #selector(MainViewController.handleApplicationDidBecomeActiveNotification(_:)),
             name: UIApplicationDidBecomeActiveNotification, // name: UIApplicationWillEnterForegroundNotification,
             object: nil)
 
@@ -73,7 +73,7 @@ class MainViewController: BasicViewController, UIScrollViewDelegate  {
     //
     override func viewDidAppear(animated: Bool) {
 
-        // DEBUG println("MainViewController.viewDidAppear()")
+        // DEBUG print("MainViewController.viewDidAppear()")
 
         // Tell the controller about this:
         _controller.setCurrentlyVisibleView(self)
@@ -85,7 +85,7 @@ class MainViewController: BasicViewController, UIScrollViewDelegate  {
     //
     func handleApplicationDidBecomeActiveNotification(notification: NSNotification) {
 
-        // DEBUG println("MainViewController.handleApplicationDidBecomeActiveNotification()")
+        // DEBUG print("MainViewController.handleApplicationDidBecomeActiveNotification()")
 
         _controller.checkIfMusicIsPlaying()
         checkWhetherToJumpToPlayerView()
@@ -98,7 +98,7 @@ class MainViewController: BasicViewController, UIScrollViewDelegate  {
     //
     func checkWhetherToJumpToPlayerView() {
 
-        // DEBUG println("MainViewController.checkWhetherToJumpToPlayerView()")
+        // DEBUG print("MainViewController.checkWhetherToJumpToPlayerView()")
 
         if _controller.musicPlayerIsPlaying() {
 
@@ -137,7 +137,7 @@ class MainViewController: BasicViewController, UIScrollViewDelegate  {
             }
         } else {
 
-            // DEBUG println("--> Nope.")
+            // DEBUG print("--> Nope.")
         }
     }
 
@@ -173,7 +173,7 @@ class MainViewController: BasicViewController, UIScrollViewDelegate  {
                 _letterToPos[firstLetter] = CGFloat(xPos-10)
 
                 // DEBUG let tmp = _letterToPos[firstLetter]
-                // DEBUG println("Setting pos of \(firstLetter) to \(tmp)")
+                // DEBUG print("Setting pos of \(firstLetter) to \(tmp)")
                 
                 previousLetter = firstLetter
             }
@@ -211,7 +211,7 @@ class MainViewController: BasicViewController, UIScrollViewDelegate  {
             let artistCaption = artistLongName + " (" +
                 ((numberOfAlbums > 1) ? (numberOfAlbums.description + ", ") : "") +
                 numberOfTracks.description + ")"
-            // DEBUG println("\(artistCaption)")
+            // DEBUG print("\(artistCaption)")
 
             // Create a label underneath the button that shows the artist name and the number of albums:
             let artistLabel = UILabel()
@@ -223,7 +223,7 @@ class MainViewController: BasicViewController, UIScrollViewDelegate  {
             _scrollView.addSubview(artistLabel)
 
             button.setArtistName(artistLongName)
-            button.addTarget(self, action: Selector("buttonPressed:"), forControlEvents: .TouchUpInside)
+            button.addTarget(self, action: #selector(MainViewController.buttonPressed(_:)), forControlEvents: .TouchUpInside)
 
             _scrollView.addSubview(button)
             
@@ -237,7 +237,7 @@ class MainViewController: BasicViewController, UIScrollViewDelegate  {
         let initialXPos = Int(arc4random_uniform(UInt32(xPos - MyBasics.screenWidth)))
         _scrollView.contentOffset = CGPoint(x: initialXPos, y: 0)
 
-        // DEBUG println("MainViewController.createScrollview(): Finished")
+        // DEBUG print("MainViewController.createScrollview(): Finished")
     }
 
 
@@ -263,11 +263,11 @@ class MainViewController: BasicViewController, UIScrollViewDelegate  {
     //
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 
-        // DEBUG println("MainViewController.prepareForSegue()")
+        // DEBUG print("MainViewController.prepareForSegue()")
 
         if segue.identifier == MyBasics.nameOfSegue_mainToAlbum {
 
-            // DEBUG println("MainView --> AlbumView")
+            // DEBUG print("MainView --> AlbumView")
 
             // this gets a reference to the screen that we're about to transition to
             let albumView = segue.destinationViewController as! AlbumViewController
@@ -278,7 +278,7 @@ class MainViewController: BasicViewController, UIScrollViewDelegate  {
 
         } else if segue.identifier == MyBasics.nameOfSegue_mainToPlayer {
 
-            // DEBUG println("MainView --> PlayerView")
+            // DEBUG print("MainView --> PlayerView")
 
             // this gets a reference to the screen that we're about to transition to
             let playerView = segue.destinationViewController as! PlayerViewController
@@ -337,7 +337,7 @@ class MainViewController: BasicViewController, UIScrollViewDelegate  {
     //
     @IBAction func unwindToViewController (sender: UIStoryboardSegue){
 
-  //      println("MainViewController.unwindToViewController()")
+  //      print("MainViewController.unwindToViewController()")
 
     }
     
